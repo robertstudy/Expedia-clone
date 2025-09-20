@@ -15,7 +15,12 @@ import {
     useBreakpointValue,
     useDisclosure,
     Image,
-    useColorMode
+    useColorMode,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    Avatar
   } from '@chakra-ui/react';
   import {
     HamburgerIcon,
@@ -31,11 +36,25 @@ import {
   import {MdOutlineFlight} from 'react-icons/md'
   import {AiFillCar} from 'react-icons/ai'
   import {Link as RouterLink} from 'react-router-dom'
+  import { useSelector, useDispatch } from 'react-redux'
+  import { logout_user } from '../Redux/Authantication/auth.action'
   
   export default function Navbar() {
     const { isOpen, onToggle } = useDisclosure();
     const { colorMode, toggleColorMode } = useColorMode();
     const myColor = useColorModeValue('light','dark')
+    const dispatch = useDispatch();
+    
+    // Get authentication state from Redux
+    const { isAuth, activeUser } = useSelector((store) => ({
+      isAuth: store.LoginReducer.isAuth,
+      activeUser: store.LoginReducer.activeUser,
+    }));
+
+    // Handle logout
+    const handleLogout = () => {
+      dispatch(logout_user);
+    };
   
     return (
     
@@ -93,11 +112,30 @@ import {
             <Box fontWeight={'500'} fontSize={{base:'16px',sm:'23px'}}  display={'flex'} >
                 <Icon mt={0.5} mr={1}   as={IoIosNotifications} />
             </Box>
-             <RouterLink to="/login">
-            <Box fontWeight={'500'}  fontSize={{base:'12px',sm:'16px'}}  mr={9} >
-                SignIn
-            </Box>
-            </RouterLink>
+            
+            {/* Conditional rendering based on authentication status */}
+            {isAuth ? (
+              <Menu>
+                <MenuButton as={Button} variant="ghost" size="sm" mr={4}>
+                  <Flex align="center">
+                    <Avatar size="sm" name={activeUser?.user_name || activeUser?.number} mr={2} />
+                    <Text fontSize={{base:'12px',sm:'16px'}} fontWeight={'500'}>
+                      {activeUser?.user_name || `User ${activeUser?.number?.slice(-4)}`}
+                    </Text>
+                    <ChevronDownIcon ml={1} />
+                  </Flex>
+                </MenuButton>
+                <MenuList>
+                  <MenuItem onClick={handleLogout}>Sign Out</MenuItem>
+                </MenuList>
+              </Menu>
+            ) : (
+              <RouterLink to="/login">
+                <Box fontWeight={'500'}  fontSize={{base:'12px',sm:'16px'}}  mr={9} >
+                    SignIn
+                </Box>
+              </RouterLink>
+            )}
             <Button onClick={toggleColorMode}>
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
             </Button>

@@ -19,7 +19,7 @@ const state = {
 
 export const Login = () => {
   const [check, setCheck] = useState(state);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuth, activeUser, user } = useSelector((store) => {
     return {
@@ -65,38 +65,31 @@ export const Login = () => {
     const phoneNumber = `+91${number}`;
     const appVerifier = window.recaptchaVerifier;
     if (number.length === 10) {
-      if (exist) {
-        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-          .then((confirmationResult) => {
-            // SMS sent. Prompt user to type the code from the message, then sign the
-            // user in with confirmationResult.confirm(code).
-            window.confirmationResult = confirmationResult;
-            setCheck({ ...check, verify: true });
-            document.querySelector(
-              "#loginMesageSuccess"
-            ).innerHTML = `Otp Send To ${number} !`;
-            document.querySelector("#loginMesageError").innerHTML = "";
-            document.querySelector("#nextText").style.display = "none";
-            // ...
-          })
-          .catch((error) => {
-            // Error; SMS not sent
-            // document.querySelector("#nextText").innerText = "Server Error"
-            // ...
-          });
-      } else {
-        document.querySelector("#loginMesageSuccess").innerHTML = ``;
-        document.querySelector("#loginMesageError").innerHTML =
-          "User does not exist Please Create Your Account !";
-          setInterval(() => {
-            window.location="/register"
-          }, 1000);
-      }
-      //
+      // Try Firebase authentication first, regardless of local database
+      signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+        .then((confirmationResult) => {
+          // SMS sent. Prompt user to type the code from the message, then sign the
+          // user in with confirmationResult.confirm(code).
+          window.confirmationResult = confirmationResult;
+          setCheck({ ...check, verify: true });
+          document.querySelector(
+            "#loginMesageSuccess"
+          ).innerHTML = `OTP sent to ${number}!`;
+          document.querySelector("#loginMesageError").innerHTML = "";
+          document.querySelector("#nextText").style.display = "none";
+        })
+        .catch((error) => {
+          console.error("Firebase auth error:", error);
+          document.querySelector("#loginMesageSuccess").innerHTML = ``;
+          document.querySelector("#loginMesageError").innerHTML = 
+            "Error sending OTP. Please try again.";
+          document.querySelector("#nextText").innerText = "SignIn";
+        });
     } else {
       document.querySelector("#loginMesageSuccess").innerHTML = ``;
       document.querySelector("#loginMesageError").innerHTML =
         "Mobile Number is Invalid !";
+      document.querySelector("#nextText").innerText = "SignIn";
     }
   }
 
@@ -105,22 +98,35 @@ export const Login = () => {
     window.confirmationResult
       .confirm(otp)
       .then((result) => {
-        // User signed in successfully.
-        const user = result.user;
+        // User signed in successfully with Firebase
+        const firebaseUser = result.user;
 
         document.querySelector(
           "#loginMesageSuccess"
-        ).innerHTML = `Verifyed Successful`;
+        ).innerHTML = `Verified Successfully`;
         document.querySelector("#loginMesageError").innerHTML = "";
 
-        dispatch(login_user(data));
-        // ...
+        // Use existing user data if available, otherwise create a basic user object
+        const userData = exist ? data : {
+          number: number,
+          user_name: firebaseUser.phoneNumber || `User_${number}`,
+          uid: firebaseUser.uid,
+          email: firebaseUser.email || "",
+          phoneNumber: firebaseUser.phoneNumber
+        };
+
+        dispatch(login_user(userData));
+        
+        // Redirect to home page after successful login
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
       })
       .catch((error) => {
         // User couldn't sign in (bad verification code?)
+        console.error("OTP verification error:", error);
         document.querySelector("#loginMesageSuccess").innerHTML = ``;
         document.querySelector("#loginMesageError").innerHTML = "Invalid OTP";
-        // ...
       });
   }
 
@@ -133,9 +139,10 @@ export const Login = () => {
 
   useEffect(() => {
     dispatch(fetch_users);
-    if (isAuth) {
-      window.location = "/";
-    }
+    // Removed automatic redirect to allow authenticated users to access login page
+    // if (isAuth) {
+    //   window.location = "/";
+    // }
   }, [isAuth]);
 
   return (
