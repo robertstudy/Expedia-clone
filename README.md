@@ -1,6 +1,6 @@
 <h1>Chalo Ghume</h1>
 
-<p>This project is a clone of the Expedia website, created by Team of 5 starting with Kumkum (Team Lead), Ashish, Amit, Sagar Balsaraf, and Sarim. The purpose of this project is to showcase our skills and knowledge in HTML, CSS, JavaScript, React, Redux, and Json-Server. This application is now hosted on AWS for improved performance and scalability.</p>
+<p>This project is a clone of the Expedia website, created by Team of 5 starting with Kumkum (Team Lead), Ashish, Amit, Sagar Balsaraf, and Sarim. The purpose of this project is to showcase our skills and knowledge in HTML, CSS, JavaScript, React, Redux, and Json-Server. The team of Madison Vosburg, Om Shukla, and, Robert Study configured this application to now be hosted on AWS for improved performance and scalability.</p>
 
 
 <h2>Tech Stack</h2>
@@ -12,7 +12,8 @@
 - Redux
 - Json-Server
 - Firebase
-- AWS (Amazon Web Services)
+- Github
+- AWS Amplify (Amazon Web Services)
 
 
 <h2>Dependency</h2>
