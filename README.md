@@ -1,6 +1,6 @@
 <h1>Chalo Ghume</h1>
 
-<p>This project is a clone of the Expedia website, created by Team of 5 starting with Kumkum (Team Lead), Ashish, Amit, Sagar Balsaraf, and Sarim . The purpose of this project is to showcase our skills and knowledge in HTML, CSS, JavaScript, React, Redux, and Json-Server.<p>
+<p>This project is a clone of the Expedia website, created by Team of 5 starting with Kumkum (Team Lead), Ashish, Amit, Sagar Balsaraf, and Sarim. The purpose of this project is to showcase our skills and knowledge in HTML, CSS, JavaScript, React, Redux, and Json-Server. This application is now hosted on AWS for improved performance and scalability.</p>
 
 
 <h2>Tech Stack</h2>
@@ -11,7 +11,8 @@
 - React
 - Redux
 - Json-Server
-- firebase
+- Firebase
+- AWS (Amazon Web Services)
 
 
 <h2>Dependency</h2>
@@ -27,13 +28,21 @@
 - react-router-dom
 - better-react-carousel
 
+<h2>Recent Updates</h2>
+
+- **AWS Hosting**: Migrated to AWS for better performance and scalability
+- **Enhanced Admin Panel**: Improved admin dashboard with better user management
+- **Optimized Performance**: Better loading times and user experience
+- **Security Improvements**: Enhanced authentication and data protection
+- **Mobile Responsiveness**: Improved mobile and tablet viewing experience
+
 <h2>Features</h2>
 
 - Landing Page
 - Login and signup via firebase (OTP).
 - View details of flights, hotels.
 - Search for flights, hotels, and holiday packages
-- Sorting & Filtering and Seraching
+- Sorting & Filtering and Searching
 - Book flights, hotels.
 - Cart Section
 - Admin Panel
@@ -63,9 +72,11 @@ http://localhost:3000/
 
 <h2>Deployment</h2>
 
-This project has been deployed using Vercel at the following URL:
+This project is now hosted on AWS for improved performance, scalability, and reliability. The application leverages AWS services to provide a seamless user experience.
 
-https://interesting-stretch-8935-liart.vercel.app/
+**Live Application:** https://main.d1i5f0twhrr3hm.amplifyapp.com
+
+*Previous deployment was on Vercel: https://interesting-stretch-8935-liart.vercel.app/*
 
 
 This is Login and Signup pages:-
