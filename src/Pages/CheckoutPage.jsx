@@ -1,5 +1,5 @@
-import React from 'react'
-import { Box, Button, HStack, Heading, Icon, Image, Input, SimpleGrid, Text } from '@chakra-ui/react'
+import React, { useState } from 'react'
+import { Box, Button, HStack, Heading, Icon, Image, Input, SimpleGrid, Text, Alert, AlertIcon, AlertTitle, AlertDescription, VStack } from '@chakra-ui/react'
 
 
 import {TbBed} from 'react-icons/tb'
@@ -8,6 +8,83 @@ import {IoIosMan} from 'react-icons/io'
 import {AiOutlineWifi} from 'react-icons/ai'
 
 const CheckoutPage = () => {
+  const [isBookingCompleted, setIsBookingCompleted] = useState(false)
+  const [formData, setFormData] = useState({
+    firstName: '',
+    surname: '',
+    mobile: '',
+    nameOnCard: '',
+    cardNumber: '',
+    securityCode: '',
+    textAlerts: false,
+    textAlertsPayment: false
+  })
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleCompleteBooking = () => {
+    // Clear all form data
+    setFormData({
+      firstName: '',
+      surname: '',
+      mobile: '',
+      nameOnCard: '',
+      cardNumber: '',
+      securityCode: '',
+      textAlerts: false,
+      textAlertsPayment: false
+    })
+    
+    // Show success message
+    setIsBookingCompleted(true)
+    
+    // Auto-hide success message after 5 seconds
+    setTimeout(() => {
+      setIsBookingCompleted(false)
+    }, 5000)
+  }
+
+  if (isBookingCompleted) {
+    return (
+      <Box bg={'gray.300'} width={'100%'} height={'100vh'} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+        <VStack spacing={6} maxWidth={'600px'} width={'90%'}>
+          <Alert status="success" borderRadius={'lg'} p={8}>
+            <AlertIcon boxSize={'40px'} mr={4} />
+            <Box>
+              <AlertTitle fontSize={'2xl'} mb={2}>Booking Confirmed!</AlertTitle>
+              <AlertDescription fontSize={'lg'}>
+                Your reservation has been successfully completed. You will receive a confirmation email shortly with all the booking details.
+              </AlertDescription>
+            </Box>
+          </Alert>
+          
+          <Box bg={'white'} p={6} borderRadius={'lg'} width={'100%'} textAlign={'center'}>
+            <Heading fontSize={'xl'} mb={4} color={'green.600'}>Booking Details</Heading>
+            <Text mb={2}><strong>Booking ID:</strong> EXP-{Date.now()}</Text>
+            <Text mb={2}><strong>Total Amount:</strong> $11,210.00</Text>
+            <Text mb={2}><strong>Payment:</strong> Pay at property</Text>
+            <Text fontSize={'sm'} color={'gray.600'} mt={4}>
+              Thank you for choosing Expedia! Have a wonderful stay.
+            </Text>
+          </Box>
+          
+          <Button 
+            colorScheme={'blue'} 
+            size={'lg'} 
+            onClick={() => setIsBookingCompleted(false)}
+          >
+            Book Another Stay
+          </Button>
+        </VStack>
+      </Box>
+    )
+  }
+
   return (
 
       <Box bg={'gray.300'} width={'100%'} height={'1000px'} >
@@ -38,24 +115,47 @@ const CheckoutPage = () => {
               <Box  >
                 <Box textAlign={'left'} my={2} >
                   <label  >
-                    First Name : <Input type='text' placeholder='First Name' border='1px solid gray' />
+                    First Name : <Input 
+                      type='text' 
+                      placeholder='First Name' 
+                      border='1px solid gray'
+                      value={formData.firstName}
+                      onChange={(e) => handleInputChange('firstName', e.target.value)}
+                    />
                   </label>
                 </Box>
                 <Box textAlign={'left'} my={2} >
                   <label>
-                    Surname Name : <Input  type='text' placeholder='Surname' border='1px solid gray' />
+                    Surname Name : <Input  
+                      type='text' 
+                      placeholder='Surname' 
+                      border='1px solid gray'
+                      value={formData.surname}
+                      onChange={(e) => handleInputChange('surname', e.target.value)}
+                    />
                   </label>
                 </Box>
                 <Box textAlign={'left'} my={2} >
                   <label>
-                    Mobile No : <Input type='text' placeholder='Mobile No' border='1px solid gray' />
+                    Mobile No : <Input 
+                      type='text' 
+                      placeholder='Mobile No' 
+                      border='1px solid gray'
+                      value={formData.mobile}
+                      onChange={(e) => handleInputChange('mobile', e.target.value)}
+                    />
                   </label>
                 </Box>
-              </Box>
+                </Box>
 
 
               <Box textAlign={'left'} display={'flex'} >
-                <Input type='checkbox'/><Heading ml={2} >Receive text alerts about this trip (free of charge).</Heading>
+                <Input 
+                  type='checkbox'
+                  isChecked={formData.textAlerts}
+                  onChange={(e) => handleInputChange('textAlerts', e.target.checked)}
+                />
+                <Heading ml={2} >Receive text alerts about this trip (free of charge).</Heading>
               </Box>
 
             </Box>
@@ -89,24 +189,47 @@ const CheckoutPage = () => {
               <Box>
                 <Box textAlign={'left'} my={2} >
                   <label  >
-                    <b>Name on Card</b> : <Input type='text' placeholder='First Name' border='1px solid gray' />
+                    <b>Name on Card</b> : <Input 
+                      type='text' 
+                      placeholder='Name on Card' 
+                      border='1px solid gray'
+                      value={formData.nameOnCard}
+                      onChange={(e) => handleInputChange('nameOnCard', e.target.value)}
+                    />
                   </label>
                 </Box>
                 <Box textAlign={'left'} my={2} >
                   <label>
-                    <b>Debil/Credit card number : </b> <Input  type='text' placeholder='Surname' border='1px solid gray' />
+                    <b>Debit/Credit card number : </b> <Input  
+                      type='text' 
+                      placeholder='Card Number' 
+                      border='1px solid gray'
+                      value={formData.cardNumber}
+                      onChange={(e) => handleInputChange('cardNumber', e.target.value)}
+                    />
                   </label>
                 </Box>
                 <Box textAlign={'left'} my={2} >
                   <label>
-                    <b>Security code :</b> <Input type='text' placeholder='Mobile No' border='1px solid gray' />
+                    <b>Security code :</b> <Input 
+                      type='text' 
+                      placeholder='CVV' 
+                      border='1px solid gray'
+                      value={formData.securityCode}
+                      onChange={(e) => handleInputChange('securityCode', e.target.value)}
+                    />
                   </label>
                 </Box>
               </Box>
 
 
               <Box textAlign={'left'} display={'flex'} >
-                <Input type='checkbox'/><Heading ml={2} >Receive text alerts about this trip (free of charge).</Heading>
+                <Input 
+                  type='checkbox'
+                  isChecked={formData.textAlertsPayment}
+                  onChange={(e) => handleInputChange('textAlertsPayment', e.target.checked)}
+                />
+                <Heading ml={2} >Receive text alerts about this trip (free of charge).</Heading>
               </Box>
 
             </Box>
@@ -140,7 +263,17 @@ const CheckoutPage = () => {
                 <Box>Pay at property</Box>
                 <Box>$11,210.00</Box>
               </Box>
-              <Button mt={4} width={'100%'} height='40px' bg={'#FF9800'}rounded={'7px'} >Complete Booking</Button>
+              <Button 
+                mt={4} 
+                width={'100%'} 
+                height='40px' 
+                bg={'#FF9800'} 
+                rounded={'7px'} 
+                onClick={handleCompleteBooking}
+                _hover={{ bg: '#F57C00' }}
+              >
+                Complete Booking
+              </Button>
             </Box>
           </SimpleGrid>
         </Box>

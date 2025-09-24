@@ -1,6 +1,7 @@
 import "./Admin.Module.css";
 import React, { useState } from "react";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { addFlight } from "../../Redux/AdminFlights/action";
 import { Link } from "react-router-dom";
@@ -17,22 +18,89 @@ let initialState = {
 };
 export const Admin = () => {
   const [flight, setFlight] = useState(initialState);
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch();
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!flight.airline.trim()) newErrors.airline = "Airline is required";
+    if (!flight.number.trim()) newErrors.number = "Flight number is required";
+    if (!flight.from.trim()) newErrors.from = "From location is required";
+    if (!flight.to.trim()) newErrors.to = "To location is required";
+    if (!flight.departure.trim()) newErrors.departure = "Departure time is required";
+    if (!flight.arrival.trim()) newErrors.arrival = "Arrival time is required";
+    if (!flight.price || flight.price <= 0) newErrors.price = "Valid price is required";
+    if (!flight.totalTime.trim()) newErrors.totalTime = "Total time is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-
+    
     setFlight((prev) => {
       return { ...prev, [name]: name === "price" ? +value : value };
     });
+
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: "" }));
+    }
   };
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log(flight);
-    dispatch(addFlight(flight));
-    setFlight(initialState);
+    
+    if (!validateForm()) {
+      toast.error("Please fill in all required fields correctly", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await dispatch(addFlight(flight));
+      setFlight(initialState);
+      setErrors({});
+      toast.success("Flight added successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      toast.error("Failed to add flight. Please try again.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   return (
     <>
+      <ToastContainer />
       <div className="adminFlightMai">
         <div className="adminSideBr">
         <h1><Link to={"/admin"}>Home</Link></h1>
@@ -55,88 +123,115 @@ export const Admin = () => {
               }}
             >
               <div className="adminFlightInputBx">
-                <label htmlFor="">Airline</label>
+                <label htmlFor="">Airline *</label>
                 <input
                   type="text"
                   id="input"
                   name="airline"
                   value={flight.airline}
                   onChange={(e) => handleChange(e)}
+                  className={errors.airline ? "error" : ""}
+                  placeholder="Enter airline name"
                 />
+                {errors.airline && <span className="error-message">{errors.airline}</span>}
               </div>
               <div className="adminFlightInputBx">
-                <label htmlFor="">Flight Number</label>
+                <label htmlFor="">Flight Number *</label>
                 <input
                   id="input"
                   type="text"
                   name="number"
                   value={flight.number}
                   onChange={(e) => handleChange(e)}
+                  className={errors.number ? "error" : ""}
+                  placeholder="Enter flight number"
                 />
+                {errors.number && <span className="error-message">{errors.number}</span>}
               </div>
               <div className="adminFlightInputBx">
-                <label htmlFor="">From</label>
+                <label htmlFor="">From *</label>
                 <input
                   id="input"
                   type="text"
                   name="from"
                   value={flight.from}
                   onChange={(e) => handleChange(e)}
+                  className={errors.from ? "error" : ""}
+                  placeholder="Departure city"
                 />
+                {errors.from && <span className="error-message">{errors.from}</span>}
               </div>
               <div className="adminFlightInputBx">
-                <label htmlFor="">To</label>
+                <label htmlFor="">To *</label>
                 <input
                   id="input"
                   type="text"
                   name="to"
                   value={flight.to}
                   onChange={(e) => handleChange(e)}
+                  className={errors.to ? "error" : ""}
+                  placeholder="Arrival city"
                 />
+                {errors.to && <span className="error-message">{errors.to}</span>}
               </div>
               <div className="adminFlightInputBx">
-                <label htmlFor="">Departure</label>
+                <label htmlFor="">Departure *</label>
                 <input
                   id="input"
                   type="text"
                   name="departure"
                   value={flight.departure}
                   onChange={(e) => handleChange(e)}
+                  className={errors.departure ? "error" : ""}
+                  placeholder="e.g., 10:30 AM"
                 />
+                {errors.departure && <span className="error-message">{errors.departure}</span>}
               </div>
               <div className="adminFlightInputBx">
-                <label htmlFor="">Arrival</label>
+                <label htmlFor="">Arrival *</label>
                 <input
                   id="input"
                   type="text"
                   name="arrival"
                   value={flight.arrival}
                   onChange={(e) => handleChange(e)}
+                  className={errors.arrival ? "error" : ""}
+                  placeholder="e.g., 2:45 PM"
                 />
+                {errors.arrival && <span className="error-message">{errors.arrival}</span>}
               </div>
               <div className="adminFlightInputBx">
-                <label htmlFor="">Price</label>
+                <label htmlFor="">Price *</label>
                 <input
                   id="input"
                   type="number"
                   name="price"
                   value={flight.price}
                   onChange={(e) => handleChange(e)}
+                  className={errors.price ? "error" : ""}
+                  placeholder="Enter price in rupees"
+                  min="1"
                 />
+                {errors.price && <span className="error-message">{errors.price}</span>}
               </div>
               <div className="adminFlightInputBx">
-                <label htmlFor="">TotalTime</label>
+                <label htmlFor="">Total Time *</label>
                 <input
                   id="input"
                   type="text"
                   name="totalTime"
                   value={flight.totalTime}
                   onChange={(e) => handleChange(e)}
+                  className={errors.totalTime ? "error" : ""}
+                  placeholder="e.g., 2h 30m"
                 />
+                {errors.totalTime && <span className="error-message">{errors.totalTime}</span>}
               </div>
               <div className="adminFlightInputBx">
                 <span></span>
-                <button>Add Flight Info</button>
+                <button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Adding Flight..." : "Add Flight Info"}
+                </button>
               </div>
             </form>
           </div>

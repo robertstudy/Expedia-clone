@@ -109,3 +109,90 @@
   width: 15%;
   font-size: larger;
 }
+
+/* Error Handling Styles */
+.adminFlightInputBx {
+  position: relative;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+.adminFlightInputBx label {
+  margin-bottom: 5px;
+  width: 100% !important;
+}
+
+.adminFlightInputBx input {
+  width: 100% !important;
+  margin-bottom: 5px;
+  color: white;
+  transition: border-color 0.3s;
+}
+
+.adminFlightInputBx input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.adminFlightInputBx input.error {
+  border-color: #ff4757 !important;
+  background-color: rgba(255, 71, 87, 0.1);
+}
+
+.error-message {
+  color: #ff4757;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 2px;
+  display: block;
+}
+
+.adminFlightInputBx button {
+  width: 100% !important;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.adminFlightInputBx button:hover:not(:disabled) {
+  background-color: rgba(0, 0, 0, 0.7);
+  transform: translateY(-2px);
+}
+
+.adminFlightInputBx button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Form Grid Layout */
+.adminFlightMai > .adminFlightBox > .adminFlightInputs form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  font-size: large;
+}
+
+.adminFlightMai > .adminFlightBox > .adminFlightInputs form > .adminFlightInputBx:last-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: 50%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .adminFlightMai > .adminFlightBox > .adminFlightInputs form {
+    grid-template-columns: 1fr;
+  }
+  
+  .adminFlightMai > .adminFlightBox > .adminFlightInputs form > .adminFlightInputBx:last-child {
+    width: 100%;
+  }
+  
+  .adminFlightMai > .adminFlightBox {
+    width: 90%;
+    transform: scale(1);
+  }
+}
